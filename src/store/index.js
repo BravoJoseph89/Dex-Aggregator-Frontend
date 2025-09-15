@@ -1,30 +1,7 @@
-import { configureStore } from '@reduxjs/toolkit';
-import walletReducer from './slices/walletSlice';
-import tokensReducer from './slices/tokensSlice';
-import swapReducer from './slices/swapSlice';
-import { walletMiddleware } from './middleware/walletMiddleware';
+import { store } from './store';
 
-export const store = configureStore({
-  reducer: {
-    wallet: walletReducer,
-    tokens: tokensReducer,
-    swap: swapReducer,
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        // Ignore these action types
-        ignoredActions: ['wallet/setProvider'],
-        // Ignore these field paths in all actions
-        ignoredActionPaths: ['payload.provider'],
-        // Ignore these paths in the state
-        ignoredPaths: ['wallet.provider'],
-      },
-    }).concat(walletMiddleware),
-});
-
-export * from './slices/walletSlice';
-export * from './slices/tokensSlice';
-export * from './slices/swapSlice';
+export * from './walletSlice';
+export * from './tokensSlice';
+export * from './swapSlice';
 
 export default store;

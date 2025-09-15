@@ -1,23 +1,25 @@
 import { configureStore } from '@reduxjs/toolkit';
-import walletReducer from './slices/walletSlice';
-import tokensReducer from './slices/tokensSlice';
-import swapReducer from './slices/swapSlice';
+import { combineReducers } from 'redux';
+import { setupListeners } from '@reduxjs/toolkit/query';
+import walletReducer from './walletSlice';
+import tokensReducer from './tokensSlice';
+import swapReducer from './swapSlice';
 
-export const store = configureStore({
-  reducer: {
-    wallet: walletReducer,
-    tokens: tokensReducer,
-    swap: swapReducer,
-  },
+const rootReducer = combineReducers({
+  wallet: walletReducer,
+  tokens: tokensReducer,
+  swap: swapReducer,
+});
+
+const store = configureStore({
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: {
-        // Ignore these action types
-        ignoredActions: ['wallet/setProvider'],
-        // Ignore these field paths in all actions
-        ignoredActionPaths: ['payload.provider'],
-        // Ignore these paths in the state
-        ignoredPaths: ['wallet.provider'],
-      },
+      serializableCheck: false,
     }),
 });
+
+// Enable refetchOnFocus/refetchOnReconnect behaviors
+setupListeners(store.dispatch);
+
+export { store };
